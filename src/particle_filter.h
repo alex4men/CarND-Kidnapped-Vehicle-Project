@@ -58,13 +58,12 @@ class ParticleFilter {
                   double yaw_rate);
   
   /**
-   * dataAssociation Finds which observations correspond to which landmarks 
-   *   (likely by using a nearest-neighbors data association).
-   * @param predicted Vector of predicted landmark observations
-   * @param observations Vector of landmark observations
+   * dataAssociation Finds which landmark observation corresponds to
+   *   (by using a nearest-neighbors data association).
+   * @param observation landmark observation
+   * @param map_landmarks contains vector of map landmarks
    */
-  void dataAssociation(std::vector<LandmarkObs> predicted, 
-                       std::vector<LandmarkObs>& observations);
+  int dataAssociation(LandmarkObs observation, const Map &map_landmarks);
   
   /**
    * updateWeights Updates the weights for each particle based on the likelihood
@@ -119,7 +118,10 @@ class ParticleFilter {
   bool is_initialized;
   
   // Vector of weights of all particles
-  std::vector<double> weights; 
+  std::vector<double> weights;
+  
+  // Max particle weight
+  double max_weight;
 };
 
 #endif  // PARTICLE_FILTER_H_

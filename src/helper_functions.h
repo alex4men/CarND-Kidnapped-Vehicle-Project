@@ -59,6 +59,38 @@ inline double dist(double x1, double y1, double x2, double y2) {
 }
 
 /**
+ * Converts coordinates of a landmark from car's frame to map frame.
+ * @param (x,y,theta) x, y and theta coordinates of a car
+ * @output coordinates of a landmark in global frame.
+ */
+inline LandmarkObs transform_obs(const double x, const double y, const double theta, const LandmarkObs &obs) {
+  // Transform the x and y coordinates
+  double x_map, y_map;
+  x_map = x + (cos(theta) * obs.x) - (sin(theta) * obs.y);
+  y_map = y + (sin(theta) * obs.x) + (cos(theta) * obs.y);
+  
+  // Create new Position to hold transformed observation
+  LandmarkObs transformed_obs;
+  
+  transformed_obs.id = obs.id;
+  transformed_obs.x = x_map;
+  transformed_obs.y = y_map;
+  
+  return transformed_obs;
+}
+
+/**
+ * Computes 2d Gaussian probability distribution.
+ * @param (valx,valy) x and y coordinates of a variable
+ * @param (mux,muy) x and y coordinates of the mean
+ * @param (stdx, stdy) x and y standard deviation
+ * @output Probability of 2D point on a 2D Gaussian.
+ */
+inline double normPdf2d(double valx, double valy, double mux, double muy, double stdx, double stdy) {
+  return (1/(stdx*stdy*2*M_PI))*exp( -(0.5*pow((valx-mux)/stdx, 2) + 0.5*pow((valy-muy)/stdy, 2)) );
+}
+
+/**
  * Computes the error between ground truth and particle filter data.
  * @param (gt_x, gt_y, gt_theta) x, y and theta of ground truth
  * @param (pf_x, pf_y, pf_theta) x, y and theta of particle filter
